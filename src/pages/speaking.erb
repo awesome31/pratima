@@ -1,0 +1,54 @@
+<section class="panel chapter" data-surface="board" data-ruler>
+  <div class="wrap">
+    <p class="chapter__tag"><span class="util">Chapter</span><%= num('III') %></p>
+    <p class="chapter__word d-xl">Speaking</p>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:speaker, "A child's drawing of a stick figure beside a board, with an empty speech bubble.") %></div>
+      <div class="chapter__text">
+        <h1 class="chapter__h">Speaking and teaching on AI, learning design and public speaking.</h1>
+        <p class="r-l">I'm a trainer at heart, based in Mumbai. I've run AI workshops for my own L&amp;D colleagues, taught public speaking to university students, and spoken to young life sciences professionals in India.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <%= index_list('What I speak and teach on', [
+      row('AI fluency in life sciences', nil, 'For mid to large-size Indian pharma organisations.'),
+      row('AI basics and fluency', nil, 'Getting a team comfortable and capable with AI in their everyday work.'),
+      row('Public speaking', nil, 'For students and early-career professionals.'),
+      row('Learning design', nil, 'How people learn, and how to design learning that holds.')
+    ]) %>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <%= index_list("Where I've taught and spoken", [
+      row('DIA India Young Leaders Program', '18 Nov 2026', 'Speaker at "Chai Pe Charcha", alongside the DIA India Annual Meeting 2026 in Navi Mumbai.'),
+      row('NMIMS summer school', '2026', 'Taught public speaking to 15+ university students.'),
+      row('AI basics and fluency, Tata Consultancy Services', '2026', 'Trained 70+ team members.'),
+      row('Pharmaceutical drug trainings, Tata Consultancy Services', '2017 to 2018', 'Trained 200+ participants across 40+ trainings, as technical trainer.'),
+      row('IPSF', '2015 to 2017', 'Trained 100+ international participants in soft skills, across 20+ offline workshops, as trainer and training coordinator.')
+    ]) %>
+    <div style="margin-top:var(--space-9)">
+      <%= figures %>
+    </div>
+    <%# Slot: event photos. Add up to three <figure class="print"> blocks here, each with a one-line caption. %>
+    <%# Slot: slides or recordings. Add <a class="link" href="..."> links here, each with a short label. %>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="wrap">
+    <%= work_with_me %>
+  </div>
+</section>
+
+<section class="sheet next" data-surface="chalk" data-ruler>
+  <div class="wrap reveal" data-io>
+    <p class="d-m">Planning an event, a class or a workshop? Tell me who it is for, when it is, and what you have in mind.</p>
+    <p><a class="btn" href="<%= r('contact/') %>">Message me with the details<%= arrow %></a></p>
+  </div>
+</section>

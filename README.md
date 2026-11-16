@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pratima Jain: personal website
 
-## Getting Started
+A five-page static site: Home, About, Ideas & experiments, Speaking & teaching, Contact. Plain HTML, CSS and a little JavaScript. No framework and no third-party embeds.
 
-First, run the development server:
+## What's here
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| Path | What it is |
+| --- | --- |
+| `site/` | The finished website. This folder is what gets served. |
+| `src/` | Page templates (`src/pages/*.erb`) and the shared layout (`src/layout.erb`). |
+| `build.rb` | Turns the templates into the pages in `site/`. Also holds the shared pieces: drawings, marks, lists. |
+| `fetch_fonts.rb` | Downloads the fonts into `site/assets/fonts/` so the site makes no requests to Google. |
+| `vercel.json` | Tells Vercel to serve `site/` as it is, with no build step. |
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Styles are in `site/assets/css/site.css` and behaviour in `site/assets/js/site.js`; both are edited directly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Changing the site
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Edit a template in `src/`, or the styles or script in `site/assets/`.
+2. Rebuild the pages:
 
-## Learn More
+   ```bash
+   ruby build.rb
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Look at it locally:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   ruby -run -e httpd site -p 4173
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   Then open http://localhost:4173.
 
-## Deploy on Vercel
+Ruby is the only tool needed, and macOS ships with it.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Publishing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel deploys this repository automatically. `site/` is committed already built, so Vercel runs no build of its own. Pushing to `main` updates the live site; pushing to any other branch creates a preview.
+
+## Fonts
+
+Bricolage Grotesque, Newsreader, IBM Plex Mono and four Noto Sans script fonts, all under the SIL Open Font Licence. Licence texts are in `site/assets/fonts/licences/`. The script fonts contain only the letters of the greetings on the site; run `ruby fetch_fonts.rb` again if a greeting changes.
+
+## Contact form
+
+The form on the Contact page sends to a Google Form. Its link is set at the top of `build.rb`.

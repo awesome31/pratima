@@ -1,0 +1,39 @@
+<section class="panel contact contact--page" data-surface="board">
+  <div class="wrap">
+    <div class="grid" style="align-items:start">
+      <figure class="g-l contact__photo print" data-io>
+        <%= photo('pratima-seated', 'Pratima Jain seated at a wooden table in a pink blazer, smiling and looking to one side.', '(min-width: 960px) 30vw, 80vw', eager: true) %>
+      </figure>
+      <div class="g-r contact__text">
+        <p class="util muted">Contact Pratima Jain</p>
+        <h1 class="d-l">Come say hello.</h1>
+        <p class="r-l">Read one of my ideas and want to argue with it, add to it or try it out? That is my favourite kind of message.</p>
+        <p class="r-m">LinkedIn is the fastest way to reach me.</p>
+        <p><span class="contact__cta" data-io><%= linkedin %><%= pen_arrow_down %></span></p>
+
+        <p class="r-m form-intro">Or leave me a message here.</p>
+        <form class="form" data-form <%= form_attrs %> method="post" novalidate>
+          <div class="field">
+            <label class="util" for="f-name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+            <p class="field__err" id="e-name" hidden>! Please add your name.</p>
+          </div>
+          <div class="field">
+            <label class="util" for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+            <p class="field__err" id="e-email" hidden>! Please add a valid email address.</p>
+          </div>
+          <div class="field">
+            <label class="util" for="f-message">Message</label>
+            <textarea id="f-message" name="message" rows="4" required aria-describedby="e-message"></textarea>
+            <p class="field__err" id="e-message" hidden>! Please write a message.</p>
+          </div>
+          <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn" type="submit">Send message</button>
+        </form>
+        <p class="form__status r-m" data-sent role="status" hidden><%= tick %>Thank you. Your message is on its way.</p>
+        <p class="form__status r-m" data-failed role="alert" hidden>That didn't send. Please reach me on LinkedIn instead.</p>
+      </div>
+    </div>
+  </div>
+</section>

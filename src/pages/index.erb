@@ -1,0 +1,146 @@
+<section class="panel hero" data-surface="board" data-ruler>
+  <div class="wrap">
+    <div class="hero__text">
+      <p class="util hero__label">Learning design · AI in learning · Life sciences</p>
+      <%= hello %>
+      <h1 class="hero__h"><span class="ln">I'm Pratima Jain,</span> <span class="ln ln--in">a learning experience</span> <span class="ln">designer in Mumbai</span> <span class="ln ln--in">who cares most about</span> <span class="ln"><%= underline('how people learn') %>.</span></h1>
+      <p class="util hero__play"><span class="only-mouse">Tap the hello. Scribble on the board. Then scroll.</span><span class="only-touch">Tap the hello. Then scroll.</span></p>
+      <%= linkedin %>
+    </div>
+    <figure class="hero__photo print" data-io>
+      <%= photo('pratima-standing', 'Pratima Jain standing and smiling, wearing a bright pink blazer over a black waistcoat, one hand resting on a wooden table.', '(min-width: 960px) 30vw, 78vw', eager: true) %>
+      <%= pen_arrow %>
+    </figure>
+  </div>
+</section>
+
+<section class="panel game" id="board" data-surface="board" data-ruler data-game>
+  <div class="wrap">
+    <div class="game__head">
+      <div class="game__intro" data-game-intro>
+        <p class="util muted">A small game</p>
+        <h2 class="d-m">Seven hellos are hiding on this board.</h2>
+        <p class="r-l">Rub it to find them.</p>
+      </div>
+      <div class="game__done" data-game-done hidden>
+        <p class="d-m">You found all seven.</p>
+        <p class="r-l quote">I don't learn a language to speak it well. I learn it to meet people where they are.</p>
+        <a class="link" href="<%= r('ideas/') %>">Read the idea<%= arrow %></a>
+      </div>
+      <p class="sticker sticker--count" aria-live="polite"><span data-game-count>0</span>&nbsp;of 7</p>
+    </div>
+    <ul class="vh" data-game-list>
+      <li><span lang="en">Hello</span>, <span>English</span></li>
+      <li><span lang="it">Ciao</span>, <span>Italian</span></li>
+      <li><span lang="hi">नमस्ते</span>, <span>Hindi</span></li>
+      <li><span lang="mr">नमस्कार</span>, <span>Marathi</span></li>
+      <li><span lang="gu">નમસ્તે</span>, <span>Gujarati</span></li>
+      <li><span lang="pa">ਸਤ ਸ੍ਰੀ ਅਕਾਲ</span>, <span>Punjabi</span></li>
+      <li><span lang="ja">こんにちは</span>, <span>Japanese</span></li>
+    </ul>
+    <p class="game__tools util">
+      <button type="button" data-game-all>Show me all seven</button>
+      <button type="button" data-game-wipe>Wipe the board</button>
+    </p>
+  </div>
+</section>
+
+<section class="panel chapter" id="about" data-surface="board" data-ruler>
+  <div class="wrap">
+    <p class="chapter__tag"><span class="util">Chapter</span><%= num('I') %></p>
+    <h2 class="chapter__word d-xl">About</h2>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:capsule, "A child's drawing of a medicine capsule, an arrow, and a pencil.") %></div>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l">I trained as a pharmacist and found my way into learning. For more than nine years at Tata Consultancy Services I have trained people, designed learning and led the teams that build it.</p>
+        <a class="link" href="<%= r('about/') %>">Read my story<%= arrow %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel chapter" id="ideas" data-surface="board" data-ruler>
+  <div class="wrap">
+    <p class="chapter__tag"><span class="util">Chapter</span><%= num('II') %></p>
+    <h2 class="chapter__word d-xl">Ideas</h2>
+    <div class="grid chapter__body">
+      <figure class="chapter__art chapter__art--photo print" style="--tilt:-2deg" data-io>
+        <%= photo('pratima-laptop', 'Pratima Jain in a pink blazer, concentrating as she types on a laptop at a wooden table.', '(min-width: 960px) 40vw, 90vw', portrait: false) %>
+      </figure>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l">I notice how people learn everywhere: at a café counter, at a family festival, in a child's latest obsession. I write those ideas down, and I run small experiments with AI in learning design to test them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="strip reveal" data-io role="region" aria-label="Ideas, scroll sideways for more" tabindex="0">
+    <article class="card">
+      <span class="util">Idea 01</span>
+      <h3 class="title">Learning ecosystems over courses</h3>
+      <p class="r-m">A course is a delivery: one modality, one sitting, one format. Learning holds when several things point at the same problem and compound.</p>
+    </article>
+    <article class="card">
+      <span class="util">Idea 02</span>
+      <h3 class="title">Attention is the entry fee, not the outcome</h3>
+      <p class="r-m">The video was never the learning. The learning is what we build around it.</p>
+    </article>
+    <article class="card">
+      <span class="util">Idea 03</span>
+      <h3 class="title">Learn the learner's five words</h3>
+      <p class="r-m">Learners don't need us to bring more words. They need us to learn theirs.</p>
+    </article>
+  </div>
+  <div class="wrap" style="padding-top:0">
+    <a class="link" href="<%= r('ideas/') %>">Read all six ideas<%= arrow %></a>
+  </div>
+</section>
+
+<section class="panel chapter" id="speaking" data-surface="board" data-ruler>
+  <div class="wrap">
+    <p class="chapter__tag"><span class="util">Chapter</span><%= num('III') %></p>
+    <h2 class="chapter__word d-xl">Speaking</h2>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:speaker, "A child's drawing of a stick figure beside a board, with an empty speech bubble.") %></div>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l">I have been training people since my student days, and I still teach whenever I can: in workshops, in classrooms and at events.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk">
+  <div class="wrap">
+    <%= figures %>
+    <p style="margin-top:var(--space-6)"><a class="link" href="<%= r('speaking/') %>">See where I've taught<%= arrow %></a></p>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="wrap">
+    <%= work_with_me %>
+  </div>
+</section>
+
+<section class="sheet closing" data-surface="chalk" data-ruler>
+  <div class="wrap d-l" data-io>
+    <p>Reels get you to <%= strike('watch') %>.</p>
+    <p>Our job is to get you to <%= circle('do') %>.</p>
+  </div>
+</section>
+
+<section class="panel contact" id="contact" data-surface="board" data-ruler>
+  <div class="wrap">
+    <div class="grid">
+      <figure class="g-l contact__photo print" data-io>
+        <%= photo('pratima-seated', 'Pratima Jain seated at a wooden table in a pink blazer, smiling and looking to one side.', '(min-width: 960px) 30vw, 80vw') %>
+      </figure>
+      <div class="g-r contact__text reveal" data-io>
+        <h2 class="d-l">Come say hello.</h2>
+        <p><span class="contact__cta" data-io><%= linkedin %><%= pen_arrow_down %></span></p>
+        <p><a class="link" href="<%= r('contact/') %>">Or leave me a message<%= arrow %></a></p>
+      </div>
+    </div>
+  </div>
+</section>

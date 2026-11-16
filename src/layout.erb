@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= h(@meta[:title]) %></title>
+<meta name="description" content="<%= h(@meta[:desc]) %>">
+<meta property="og:title" content="<%= h(@meta[:title]) %>">
+<meta property="og:description" content="<%= h(@meta[:desc]) %>">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E3A32">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F3F5F1'/%3E%3Crect x='8' width='4' height='32' fill='%23D6246E'/%3E%3C/svg%3E">
+<link rel="preload" href="<%= r('assets/fonts/bricolage-grotesque-normal-400_800-latin.woff2') %>" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<%= r('assets/fonts/newsreader-normal-400_600-latin.woff2') %>" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="<%= r('assets/css/fonts.css') %>">
+<link rel="stylesheet" href="<%= r('assets/css/site.css') %>">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="margin-rule" aria-hidden="true"></div>
+
+<header class="header">
+  <a class="header__mark" href="<%= r %>">Pratima Jain</a>
+  <nav class="header__nav util" aria-label="Chapters">
+<% NAV.each do |slug, label, _| -%>
+    <a href="<%= r("#{slug}/") %>"<%= key == slug ? ' aria-current="page"' : '' %>><%= label %></a>
+<% end -%>
+  </nav>
+  <button class="btn" type="button" data-menu data-close="Close" aria-expanded="false" aria-controls="menu"><span>Menu</span></button>
+</header>
+<div class="ruler" aria-hidden="true"></div>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <nav aria-label="Menu">
+    <ul class="menu__list d-l">
+<% NAV.each do |slug, label, numeral| -%>
+      <li><span class="util" aria-hidden="true"><%= numeral %></span><a href="<%= r("#{slug}/") %>"<%= key == slug ? ' aria-current="page"' : '' %>><span class="mark mark--underline"><%= label %><svg aria-hidden="true" viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M2 7 C28 2 52 11 86 6 S152 2 198 8"/></svg></span></a></li>
+<% end -%>
+    </ul>
+  </nav>
+  <div><%= linkedin %></div>
+</div>
+
+<main id="main">
+<%= @body %>
+</main>
+
+<footer class="footer sheet" data-surface="chalk">
+  <div class="wrap util">
+    <span>Pratima Jain · 2026</span>
+    <%= hello(3, 'sticker--tilt') %>
+    <a href="<%= LINKEDIN %>" target="_blank" rel="noopener">LinkedIn<span class="vh"> opens in a new tab</span></a>
+  </div>
+</footer>
+
+<script src="<%= r('assets/js/site.js') %>" defer></script>
+</body>
+</html>

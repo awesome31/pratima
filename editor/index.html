@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website editor</title>
+<link rel="stylesheet" href="/preview/assets/css/fonts.css">
+<style>
+  :root { --chalk:#F3F5F1; --board:#1E3A32; --ink:#17211E; --pencil:#5C6B64; --blazer:#D6246E; --blazer-deep:#C81C63; --wash:#FBE6EF; --line:#C9D1CB;
+    --display:'Bricolage Grotesque',system-ui,sans-serif; --reading:'Newsreader',Georgia,serif; --mono:'IBM Plex Mono',ui-monospace,monospace; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--chalk); color: var(--ink); font: 400 16px/1.5 var(--display); display: grid; grid-template-rows: auto 1fr; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--blazer-deep); outline-offset: 2px; }
+
+  .bar { background: var(--board); color: var(--chalk); display: flex; align-items: center; gap: 12px; padding: 12px 20px; flex-wrap: wrap; }
+  .bar h1 { font: 700 1.125rem/1.2 var(--display); margin: 0 auto 0 0; }
+  .status { font: 500 .8125rem/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; border: 1.5px solid currentColor; }
+  .status.is-dirty { background: var(--blazer); border-color: var(--blazer); color: #fff; }
+  .btn { border: 1.5px solid var(--chalk); background: transparent; color: var(--chalk); border-radius: 999px; padding: 9px 18px; font-weight: 600; min-height: 44px; }
+  .btn:hover { background: var(--chalk); color: var(--board); }
+  .btn--main { background: var(--chalk); color: var(--board); }
+  .btn--main:hover { background: transparent; color: var(--chalk); }
+  .btn[disabled] { opacity: .45; cursor: default; }
+  .btn--ink { border-color: var(--ink); color: var(--ink); }
+  .btn--ink:hover { background: var(--ink); color: var(--chalk); }
+
+  .shell { display: grid; grid-template-columns: 190px minmax(340px, 560px) 1fr; min-height: 0; }
+  .tabs { border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; overflow: auto; }
+  .tab { text-align: left; border: 0; background: none; padding: 11px 12px; border-radius: 8px; font-weight: 600; min-height: 44px; }
+  .tab:hover { background: #E6EAE4; }
+  .tab[aria-selected="true"] { background: var(--board); color: var(--chalk); }
+  .tabs p { font: 400 .875rem/1.45 var(--reading); color: var(--pencil); margin: 16px 6px 0; }
+
+  .form { overflow: auto; padding: 20px 24px 120px; }
+  .form > h2 { font: 700 1.75rem/1.1 var(--display); margin: 0 0 4px; }
+  .form > .lead { font: 400 1rem/1.5 var(--reading); color: var(--pencil); margin: 0 0 20px; }
+  .group { border: 1px solid var(--line); border-radius: 10px; margin: 0 0 14px; background: #fff; }
+  .group > summary { list-style: none; cursor: pointer; padding: 13px 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; min-height: 48px; }
+  .group > summary::-webkit-details-marker { display: none; }
+  .group > summary::before { content: "+"; font: 500 1.1rem/1 var(--mono); color: var(--blazer-deep); width: 14px; }
+  .group[open] > summary::before { content: "–"; }
+  .group > .inner { padding: 4px 16px 16px; border-top: 1px solid var(--line); }
+  .group .group { background: var(--chalk); }
+  .field { display: block; margin: 14px 0 0; }
+  .field > span { display: block; font: 500 .8125rem/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--pencil); margin-bottom: 5px; }
+  .field > small { display: block; font: 400 .875rem/1.4 var(--reading); color: var(--pencil); margin-top: 4px; }
+  .field input[type=text], .field textarea, .field select { width: 100%; border: 1px solid #AEB8B1; border-radius: 6px; padding: 10px 12px; background: #fff; font: 400 1.0625rem/1.5 var(--reading); }
+  .field textarea { resize: vertical; min-height: 4.6em; field-sizing: content; }
+  .check { display: flex; align-items: center; gap: 10px; margin: 14px 0 0; font-weight: 500; min-height: 44px; }
+  .check input { width: 20px; height: 20px; accent-color: var(--blazer-deep); }
+  .list { margin: 14px 0 0; }
+  .list > .list__title { font: 500 .8125rem/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--pencil); margin: 0 0 6px; }
+  .list__hint { display: block; font: 400 .875rem/1.4 var(--reading); color: var(--pencil); margin: -2px 0 8px; }
+  .item { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; margin-bottom: 8px; }
+  .item > .group, .item > .field { margin: 0; }
+  .tools { display: flex; gap: 4px; padding-top: 2px; }
+  .tools button { width: 36px; height: 36px; border: 1px solid var(--line); background: #fff; border-radius: 6px; font: 500 1rem/1 var(--mono); }
+  .tools button:hover { border-color: var(--ink); }
+  .tools button[disabled] { opacity: .3; cursor: default; }
+  .add { border: 1.5px dashed var(--pencil); background: none; border-radius: 8px; padding: 10px 14px; font-weight: 600; color: var(--pencil); min-height: 44px; }
+  .add:hover { border-color: var(--blazer-deep); color: var(--blazer-deep); }
+
+  .view { border-left: 1px solid var(--line); display: grid; grid-template-rows: auto 1fr; min-width: 0; background: #DDE2DC; }
+  .view__bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--chalk); border-bottom: 1px solid var(--line); font: 500 .8125rem/1.4 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--pencil); }
+  .view__bar button { border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 6px 10px; font: inherit; letter-spacing: inherit; text-transform: inherit; }
+  .view__bar button[aria-pressed="true"] { background: var(--board); color: var(--chalk); border-color: var(--board); }
+  .view__frame { display: grid; justify-items: center; overflow: auto; }
+  iframe { border: 0; width: 100%; height: 100%; background: #fff; }
+  .view.is-phone iframe { width: 390px; }
+
+  .photo { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: start; border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 14px; margin-bottom: 14px; }
+  .photo img { width: 120px; height: auto; border: 4px solid var(--chalk); outline: 1px solid var(--line); }
+  .photo h3 { margin: 0 0 4px; font: 700 1.0625rem/1.2 var(--display); }
+  .photo p { margin: 0 0 10px; font: 400 .9375rem/1.45 var(--reading); color: var(--pencil); }
+
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: var(--chalk); padding: 12px 20px; border-radius: 999px; font-weight: 600; max-width: min(92vw, 640px); z-index: 20; }
+  .toast.is-bad { background: var(--blazer-deep); border-radius: 12px; white-space: pre-wrap; font: 400 .9375rem/1.45 var(--reading); }
+  dialog { border: 0; border-radius: 14px; padding: 0; width: min(92vw, 600px); color: var(--ink); background: var(--chalk); }
+  dialog::backdrop { background: rgba(23, 33, 30, .55); }
+  .dlg { padding: 24px; }
+  .dlg h2 { font: 700 1.5rem/1.15 var(--display); margin: 0 0 8px; }
+  .dlg p, .dlg li { font: 400 1.0625rem/1.5 var(--reading); }
+  .dlg ol, .dlg ul { padding-left: 1.3em; }
+  .choice { border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 14px 16px; margin: 12px 0; }
+  .choice h3 { margin: 0 0 4px; font: 700 1.0625rem/1.2 var(--display); }
+  .choice p { margin: 0 0 12px; font-size: 1rem; color: var(--pencil); }
+  .dlg__foot { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  .result { white-space: pre-wrap; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; font: 400 .9375rem/1.45 var(--reading); margin-top: 12px; }
+  code { font: 500 .9em var(--mono); background: #E6EAE4; padding: 1px 5px; border-radius: 4px; }
+
+  @media (max-width: 1100px) {
+    .shell { grid-template-columns: 1fr; }
+    .tabs { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--line); }
+    .tabs p { display: none; }
+    .view { min-height: 80vh; border-left: 0; border-top: 1px solid var(--line); }
+    body { grid-template-rows: auto auto; height: auto; }
+    .form { overflow: visible; padding-bottom: 40px; }
+  }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>Website editor</h1>
+  <span class="status" id="status">Loading</span>
+  <button class="btn" id="undo" type="button">Undo last save</button>
+  <button class="btn" id="help" type="button">Help</button>
+  <button class="btn" id="publish" type="button">Publish</button>
+  <button class="btn btn--main" id="save" type="button">Save and preview</button>
+</header>
+
+<div class="shell">
+  <nav class="tabs" id="tabs" aria-label="Pages"></nav>
+  <main class="form" id="form"></main>
+  <aside class="view" id="view">
+    <div class="view__bar">
+      <span style="margin-right:auto">Preview</span>
+      <button type="button" data-size="desktop" aria-pressed="true">Computer</button>
+      <button type="button" data-size="phone" aria-pressed="false">Phone</button>
+      <button type="button" id="newtab">Open in a new tab</button>
+    </div>
+    <div class="view__frame"><iframe id="frame" title="Preview of the website"></iframe></div>
+  </aside>
+</div>
+
+<dialog id="publishDlg"><div class="dlg">
+  <h2>Publish</h2>
+  <p>Publishing sends your saved changes to GitHub, and Vercel puts them online a minute or two later.</p>
+  <div class="choice">
+    <h3>Send a preview</h3>
+    <p>Puts the changes on a private preview link. Your real website does not change.</p>
+    <button class="btn btn--ink" type="button" data-publish="preview">Send a preview</button>
+  </div>
+  <div class="choice">
+    <h3>Go live</h3>
+    <p>Replaces what visitors see on your real website. Do this once you are happy with the preview.</p>
+    <button class="btn btn--ink" type="button" data-publish="live">Go live</button>
+  </div>
+  <div class="result" id="publishResult" hidden></div>
+  <div class="dlg__foot"><button class="btn btn--ink" type="button" data-close>Close</button></div>
+</div></dialog>
+
+<dialog id="helpDlg"><div class="dlg">
+  <h2>How this works</h2>
+  <ol>
+    <li><strong>Pick a page</strong> on the left.</li>
+    <li><strong>Change the words</strong> in the boxes. Click a title with a + to open it.</li>
+    <li>Press <strong>Save and preview</strong>. The preview on the right shows the result.</li>
+    <li>Not what you wanted? Press <strong>Undo last save</strong>. Each press steps back one save.</li>
+    <li>Happy? Press <strong>Publish</strong>, send a preview first, then go live.</li>
+  </ol>
+  <p><strong>Lists</strong> (ideas, career rows, talks): use ↑ and ↓ to reorder, × to remove, and the dashed button to add one.</p>
+  <p><strong>Leave a box empty</strong> to hide that line on the site. An empty link hides its button.</p>
+  <p><strong>Nothing here changes the design.</strong> Colours, fonts, layout, the greetings and the drawings are fixed. To change those, open this folder in Claude and ask; the file <code>HANDOVER.md</code> tells Claude everything it needs.</p>
+  <p>More detail is in <code>README.md</code> in the project folder.</p>
+  <div class="dlg__foot"><button class="btn btn--ink" type="button" data-close>Close</button></div>
+</div></dialog>
+
+<script>
+(() => {
+  const $ = (s, c = document) => c.querySelector(s);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    Object.entries(attrs).forEach(([k, v]) => { if (k === 'class') n.className = v; else if (k in n) n[k] = v; else n.setAttribute(k, v); });
+    kids.flat().forEach((k) => n.append(k));
+    return n;
+  };
+
+  /* ---- Plain-English names and hints for the boxes ---- */
+  const TABS = [
+    ['home', 'Home', '/preview/', 'The first page visitors see: the hello, the game and a preview of each chapter.'],
+    ['about', 'About', '/preview/about/', 'Your story, career, education and community.'],
+    ['ideas', 'Ideas', '/preview/ideas/', 'Your ideas and experiments.'],
+    ['speaking', 'Speaking', '/preview/speaking/', 'What you teach, and where you have taught and spoken.'],
+    ['contact', 'Contact', '/preview/contact/', 'The contact page and the words around its form.'],
+    ['shared', 'Shared bits', '/preview/', 'Words used on more than one page: the menu, the numbers, Work with me, the footer.'],
+    ['photos', 'Photos', '/preview/', 'Swap any of the three photos.'],
+  ];
+  const LABELS = {
+    browser_title: 'Browser tab title', search_description: 'Description shown in Google results', word: 'Big chapter word',
+    label: 'Small label', tag: 'Small tag (date or type)', photo_description: 'Photo described for screen readers',
+    drawing_description: 'Drawing described for screen readers', heading_lines: 'Heading, one line per row',
+    underlined_phrase: 'Phrase to underline', struck_word: 'Word to strike through', circled_word: 'Word to circle',
+    highlighted_phrase: 'Phrase to highlight in pink', timeline_line: 'Show the dashed timeline line beside this list',
+    circled: 'Circle this number', after_quote: 'Paragraph after the quote', quote: 'Quoted line', linkedin_url: 'Your LinkedIn address',
+    linkedin_button: 'LinkedIn button words', prompt_mouse: 'Play prompt on computers', prompt_touch: 'Play prompt on phones',
+    hero: 'First screen', game: 'The hello board game', about_preview: 'Chapter I preview: About', ideas_preview: 'Chapter II preview: Ideas',
+    speaking_preview: 'Chapter III preview: Speaking', closing: 'Closing line', contact_preview: 'Contact preview', opening: 'Top of the page',
+    story: 'Your story', lists: 'Lists (career, education, community)', next_step: 'Bottom of the page', cards: 'Idea cards on Home',
+    cards_label: 'Card strip named for screen readers', items: 'Numbers', note: 'Line under the numbers', figures: 'The big numbers',
+    work_with_me: 'Work with me', not_found: 'Page-not-found message', menu: 'Menu words', footer_left: 'Footer, left side',
+    footer_link: 'Footer link words', chapter_label: 'Word before the chapter number', name: 'Name', ideas_heading: 'Heading above the ideas',
+    experiments_heading: 'Heading above the experiments', experiments_intro: 'Line beside the experiments', experiments_link_label: 'Words on an experiment link',
+    slides_and_recordings: 'Slides and recordings', topics_heading: 'Heading above the topics', record_heading: 'Heading above the record',
+    record: 'Where you have taught and spoken', drawing: 'Drawing', form: 'The form', linkedin_line: 'Line about LinkedIn',
+  };
+  const HELP = {
+    browser_title: 'Shown on the browser tab and as the blue link in Google.',
+    search_description: 'One or two sentences. Google often shows this under the link.',
+    underlined_phrase: 'Must match words in the heading exactly, or no underline is drawn.',
+    struck_word: 'Must be a word in line 1.', circled_word: 'Must be a word in line 2.',
+    highlighted_phrase: 'Must match words in a paragraph below exactly. Leave empty for no highlight.',
+    link: 'A full web address starting with https://. Leave empty to hide the link.',
+    'ideas.experiments.link': 'A full web address starting with https://. Leave empty to hide the "Try it" link.',
+    quote: 'Optional. Shown in italics with a hand-drawn bracket.', after_quote: 'Optional.',
+    description: 'Leave empty and the row shows the name only.',
+    number: 'A number, with + after it if you like. It counts up on screen.',
+    'shared.name': 'Shown top left on every page.',
+    'home.hero.heading_lines': 'Every second line is indented. Keep lines short: about 22 letters.',
+    drawing: 'The child-style drawing shown beside this experiment.',
+  };
+  const CHOICES = { drawing: [['none', 'No drawing'], ['dice', 'Dice and coins'], ['robot', 'Robot and learner'], ['megaphone', 'Megaphone and star'], ['capsule', 'Capsule, arrow, pencil'], ['speaker', 'Speaker at a board']] };
+  const LONG = new Set(['paragraph', 'paragraphs', 'description', 'text', 'search_description', 'quote', 'after_quote', 'finished_quote', 'line', 'photo_description', 'drawing_description']);
+  const BLANK = {
+    'about.lists.rows': { name: '', tag: '', description: '' }, 'about.lists': { heading: '', timeline_line: false, rows: [] },
+    'about.story': { heading: '', paragraphs: [''], highlighted_phrase: '' }, 'home.ideas_preview.cards': { label: '', title: '', text: '' },
+    'ideas.ideas': { label: '', title: '', paragraphs: [''], quote: '', after_quote: '' },
+    'ideas.experiments': { name: '', tag: '', description: '', drawing: 'none', drawing_description: '', link: '' },
+    'speaking.topics': { name: '', description: '' }, 'speaking.record': { name: '', tag: '', description: '' },
+    'speaking.slides_and_recordings': { label: '', link: '' }, 'shared.figures.items': { number: '', caption: '', circled: false },
+  };
+  const ONE = { rows: 'row', cards: 'card', ideas: 'idea', experiments: 'experiment', topics: 'topic', record: 'entry', slides_and_recordings: 'link', items: 'number', story: 'section', lists: 'list', paragraphs: 'paragraph', heading_lines: 'line' };
+  const nice = (key) => LABELS[key] || (key.charAt(0).toUpperCase() + key.slice(1)).replace(/_/g, ' ');
+
+  let data = null, dirty = false, tab = 'home';
+  const status = $('#status'), form = $('#form'), frame = $('#frame'), view = $('#view');
+
+  const setDirty = (v) => {
+    dirty = v;
+    status.textContent = v ? 'Unsaved changes' : 'All changes saved';
+    status.classList.toggle('is-dirty', v);
+  };
+  const toast = (text, bad) => {
+    document.querySelectorAll('.toast').forEach((t) => t.remove());
+    const t = el('div', { class: 'toast' + (bad ? ' is-bad' : ''), role: 'status' }, text);
+    document.body.append(t);
+    setTimeout(() => t.remove(), bad ? 9000 : 3200);
+  };
+  const post = async (url, body, raw) => {
+    const res = await fetch(url, { method: 'POST', headers: { 'X-Editor': '1' }, body: raw ? body : JSON.stringify(body || {}) });
+    return res.json();
+  };
+
+  /* ---- Building the form from the content ---- */
+  const field = (obj, key, path) => {
+    const value = obj[key];
+    const label = el('span', {}, typeof key === 'number' ? '' : nice(key));
+    const hint = typeof key === 'number' ? null : (HELP[path] || HELP[String(key)]);
+    if (typeof value === 'boolean') {
+      const box = el('input', { type: 'checkbox', checked: value });
+      box.addEventListener('change', () => { obj[key] = box.checked; setDirty(true); });
+      return el('label', { class: 'check' }, box, nice(key));
+    }
+    let input;
+    const name = String(path.split('.').pop());
+    if (CHOICES[name]) {
+      input = el('select', {}, CHOICES[name].map(([v, t]) => el('option', { value: v, selected: v === value }, t)));
+      input.addEventListener('change', () => { obj[key] = input.value; setDirty(true); });
+    } else {
+      input = LONG.has(name) || String(value).length > 70 ? el('textarea', { value, rows: 3 }) : el('input', { type: 'text', value });
+      input.addEventListener('input', () => { obj[key] = input.value; setDirty(true); });
+    }
+    if (typeof key === 'number') input.setAttribute('aria-label', nice(name) + ' ' + (key + 1));
+    return el('label', { class: 'field' }, typeof key === 'number' ? [] : label, input, hint ? el('small', {}, hint) : []);
+  };
+
+  const group = (title, obj, path, open) => {
+    const inner = el('div', { class: 'inner' });
+    Object.keys(obj).forEach((k) => inner.append(render(obj, k, path ? path + '.' + k : k)));
+    return el('details', { class: 'group', open: !!open }, el('summary', {}, title), inner);
+  };
+
+  const list = (obj, key, path) => {
+    const arr = obj[key], wrap = el('div', { class: 'list' });
+    const draw = (openIndex) => {
+      wrap.replaceChildren(el('p', { class: 'list__title' }, nice(key)));
+      if (HELP[path]) wrap.append(el('small', { class: 'list__hint' }, HELP[path]));
+      arr.forEach((item, i) => {
+        const body = typeof item === 'object'
+          ? group(item.name || item.title || item.heading || item.label || item.number || nice(ONE[key] || 'item') + ' ' + (i + 1), item, path, i === openIndex)
+          : field(arr, i, path);
+        const move = (to) => { arr.splice(to, 0, arr.splice(i, 1)[0]); setDirty(true); draw(); };
+        const tools = el('div', { class: 'tools' },
+          el('button', { type: 'button', title: 'Move up', disabled: i === 0, onclick: () => move(i - 1) }, '↑'),
+          el('button', { type: 'button', title: 'Move down', disabled: i === arr.length - 1, onclick: () => move(i + 1) }, '↓'),
+          el('button', { type: 'button', title: 'Remove', onclick: () => { if (confirm('Remove this ' + (ONE[key] || 'item') + '?')) { arr.splice(i, 1); setDirty(true); draw(); } } }, '×'));
+        wrap.append(el('div', { class: 'item' }, body, tools));
+      });
+      wrap.append(el('button', { type: 'button', class: 'add', onclick: () => {
+        const blank = BLANK[path] !== undefined ? JSON.parse(JSON.stringify(BLANK[path])) : '';
+        arr.push(blank); setDirty(true); draw(arr.length - 1);
+        const last = wrap.querySelectorAll('.item')[arr.length - 1];
+        last && last.querySelector('input, textarea') && last.querySelector('input, textarea').focus();
+      } }, '+ Add a ' + (ONE[key] || 'item')));
+    };
+    draw();
+    return wrap;
+  };
+
+  function render(obj, key, path) {
+    const v = obj[key];
+    if (Array.isArray(v)) return list(obj, key, path);
+    if (v && typeof v === 'object') return group(nice(key), v, path, false);
+    return field(obj, key, path);
+  }
+
+  const PHOTOS = [
+    ['standing', 'Standing photo', 'Home page, first screen.'],
+    ['laptop', 'Laptop photo', 'Home page (Ideas chapter) and the top of the Ideas page. Best as a wide photo.'],
+    ['seated', 'Seated photo', 'Home page (contact section) and the Contact page.'],
+  ];
+  const photos = () => PHOTOS.map(([slot, title, where]) => {
+    const img = el('img', { src: `/preview/assets/img/pratima-${slot}-900.jpg?${Date.now()}`, alt: '' });
+    const pick = el('input', { type: 'file', accept: 'image/*' });
+    pick.addEventListener('change', async () => {
+      if (!pick.files[0]) return;
+      toast('Resizing the photo…');
+      const r = await post('/api/photo?slot=' + slot, pick.files[0], true);
+      if (!r.ok) return toast(r.error || 'That did not work.', true);
+      img.src = `/preview/assets/img/pratima-${slot}-900.jpg?${Date.now()}`;
+      frame.contentWindow.location.reload();
+      toast('Photo replaced. Check the preview.');
+    });
+    return el('div', { class: 'photo' }, img, el('div', {}, el('h3', {}, title), el('p', {}, where), pick));
+  });
+
+  const show = (name) => {
+    tab = name;
+    const [, title, url, lead] = TABS.find((t) => t[0] === name);
+    document.querySelectorAll('.tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    form.replaceChildren(el('h2', {}, title), el('p', { class: 'lead' }, lead));
+    if (name === 'photos') {
+      form.append(...photos(), el('p', { class: 'lead' }, 'A new photo replaces the old one straight away, with no undo button. Keep your original files. The words that describe each photo to screen readers are on the page where the photo appears.'));
+    } else {
+      const section = data[name];
+      Object.keys(section).forEach((k) => {
+        const node = render(section, k, name + '.' + k);
+        form.append(node);
+      });
+    }
+    if (!frame.src.endsWith(url)) frame.src = url;
+    form.scrollTop = 0;
+  };
+
+  /* ---- Buttons ---- */
+  const save = async () => {
+    $('#save').disabled = true;
+    try {
+      const r = await post('/api/save', data);
+      if (!r.ok) return toast(r.error || 'That could not be saved.', true), false;
+      setDirty(false);
+      frame.contentWindow.location.reload();
+      toast('Saved. The preview is up to date.');
+      return true;
+    } catch (e) { toast('The editor has stopped running. Double-click "Edit my website" again, then press Save.', true); return false; }
+    finally { $('#save').disabled = false; }
+  };
+  $('#save').addEventListener('click', save);
+  addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); save(); } });
+
+  $('#undo').addEventListener('click', async () => {
+    if (dirty && !confirm('You have changes you have not saved. Undo will discard them and also step back one save. Continue?')) return;
+    const r = await post('/api/undo');
+    if (!r.ok) return toast(r.error || 'There is nothing to undo.', true);
+    data = await (await fetch('/api/content')).json();
+    setDirty(false); show(tab); frame.contentWindow.location.reload();
+    toast('Stepped back one save.');
+  });
+
+  const publishDlg = $('#publishDlg'), result = $('#publishResult');
+  $('#publish').addEventListener('click', () => { result.hidden = true; publishDlg.showModal(); });
+  $('#help').addEventListener('click', () => $('#helpDlg').showModal());
+  document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
+  document.querySelectorAll('[data-publish]').forEach((b) => b.addEventListener('click', async () => {
+    const target = b.dataset.publish;
+    if (target === 'live' && !confirm('Go live? This replaces what visitors see on your real website.')) return;
+    if (dirty && !(await save())) return;
+    result.hidden = false; result.textContent = 'Sending…';
+    const r = await post('/api/publish', { target });
+    if (r.ok) {
+      result.textContent = target === 'live'
+        ? 'Sent. Your real website will update in a minute or two.'
+        : 'Sent. Vercel is building a preview. Find its link on GitHub: open the repository, switch to the "new-site" branch, and click the green tick beside the latest change.';
+    } else if (r.needs_signin) {
+      result.textContent = 'Your changes are saved on this computer, but GitHub needs you to sign in.\n\nIn the project folder, double-click "Publish to GitHub.command" and follow the steps there.';
+    } else {
+      result.textContent = 'That did not go through. Your changes are safe on this computer.\n\n' + (r.output || r.error || '');
+    }
+  }));
+
+  document.querySelectorAll('[data-size]').forEach((b) => b.addEventListener('click', () => {
+    view.classList.toggle('is-phone', b.dataset.size === 'phone');
+    document.querySelectorAll('[data-size]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  $('#newtab').addEventListener('click', () => window.open(frame.src, '_blank'));
+  addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  /* ---- Start ---- */
+  const tabs = $('#tabs');
+  TABS.forEach(([name, title]) => {
+    const b = el('button', { type: 'button', class: 'tab', onclick: () => show(name) }, title);
+    b.dataset.tab = name;
+    b.setAttribute('aria-selected', 'false');
+    tabs.append(b);
+  });
+  tabs.append(el('p', {}, 'Change the words, press Save and preview, then Publish when you are happy.'));
+  fetch('/api/content').then((r) => r.json()).then((json) => { data = json; setDirty(false); show('home'); })
+    .catch(() => { status.textContent = 'Could not load'; toast('The content could not be loaded. Close this tab and start the editor again.', true); });
+})();
+</script>
+</body>
+</html>

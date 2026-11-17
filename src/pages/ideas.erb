@@ -1,14 +1,15 @@
+<% p = C['ideas']; o = p['opening'] -%>
 <section class="panel chapter" data-surface="board" data-ruler>
   <div class="wrap">
-    <p class="chapter__tag"><span class="util">Chapter</span><%= num('II') %></p>
-    <p class="chapter__word d-xl">Ideas</p>
+    <%= chapter_tag('II') %>
+    <p class="chapter__word d-xl"><%= h o['word'] %></p>
     <div class="grid chapter__body">
       <figure class="chapter__art chapter__art--photo print" style="--tilt:-2deg" data-io>
-        <%= photo('pratima-laptop', 'Pratima Jain in a pink blazer, concentrating as she types on a laptop at a wooden table.', '(min-width: 960px) 40vw, 90vw', portrait: false, eager: true) %>
+        <%= photo('pratima-laptop', o['photo_description'], '(min-width: 960px) 40vw, 90vw', portrait: false, eager: true) %>
       </figure>
       <div class="chapter__text">
-        <h1 class="chapter__h">Ideas and experiments on how people learn.</h1>
-        <p class="r-l">Most of my ideas start somewhere ordinary: a café counter, a family festival, a child's latest obsession. Here is why I would build learning ecosystems before courses, what separates microlearning from reels, and what I am making to test all of it.</p>
+        <h1 class="chapter__h"><%= h o['heading'] %></h1>
+        <p class="r-l"><%= h o['paragraph'] %></p>
       </div>
     </div>
   </div>
@@ -16,73 +17,36 @@
 
 <section class="sheet" data-surface="chalk" data-ruler>
   <div class="wrap">
-    <div class="sec-head"><h2 class="d-m">Six ideas</h2><span class="sec-head__count d-m" aria-hidden="true">6</span></div>
+    <div class="sec-head"><h2 class="d-m"><%= h p['ideas_heading'] %></h2><span class="sec-head__count d-m" aria-hidden="true"><%= p['ideas'].size %></span></div>
+<% p['ideas'].each do |idea| -%>
 
     <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 01</span><h3 class="idea__title">Learning ecosystems over courses</h3></header>
+      <header class="idea__head"><span class="util idea__label"><%= h idea['label'] %></span><h3 class="idea__title"><%= h idea['title'] %></h3></header>
       <div class="idea__body">
-        <p>I once watched a child build their own curriculum around something they loved. Nobody sequenced it. There was video, play, things to hold, a book to look things up in, audio, and people who already cared about the subject. Each one came at the same world from a different angle, and the angles compounded.</p>
-        <p>A course is a delivery: one modality, one sitting, one format. Then we wonder why nothing holds three weeks later. I think L&amp;D teams should stop shipping courses and start assembling learning ecosystems, accelerated with AI. Same budget, different unit of work.</p>
+<% idea['paragraphs'].each do |text| -%>
+        <p><%= h text %></p>
+<% end -%>
+<% unless idea['quote'].to_s.strip.empty? -%>
+        <p class="idea__quote"><%= bracket %><%= h idea['quote'] %></p>
+<% end -%>
+<% unless idea['after_quote'].to_s.strip.empty? -%>
+        <p><%= h idea['after_quote'] %></p>
+<% end -%>
       </div>
     </article>
-
-    <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 02</span><h3 class="idea__title">Microlearning vs reels: attention is the entry fee, not the outcome</h3></header>
-      <div class="idea__body">
-        <p>I have learnt from reels for years. So what separates a video in an e-learning module from a reel? If the module is only the video, nothing.</p>
-        <p>The video was never the learning. The learning is what we build around it: the sequence, the practice, the feedback when you get it wrong, the context of your role, and some proof that something changed.</p>
-        <p class="idea__quote"><%= bracket %>Reels get you to watch. Our job is to get you to do.</p>
-      </div>
-    </article>
-
-    <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 03</span><h3 class="idea__title">Learn the learner's five words</h3></header>
-      <div class="idea__body">
-        <p>I don't learn a language to speak it well. I learn it to meet people where they are. A handful of words is enough to start a friendship.</p>
-        <p>That is the whole job of a learning designer. Learners don't need us to bring more words. They need us to learn theirs.</p>
-      </div>
-    </article>
-
-    <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 04</span><h3 class="idea__title">One workshop changes nothing on its own</h3></header>
-      <div class="idea__body">
-        <p>One AI workshop or one course won't change anything unless the plan includes your day-to-day work. A good session gives people somewhere to start. What happens afterwards matters just as much.</p>
-      </div>
-    </article>
-
-    <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 05</span><h3 class="idea__title">A room gives you people</h3></header>
-      <div class="idea__body">
-        <p>I make it to a few events a year, and the return is rarely the sessions. It is the people I meet on the way in and on the way out.</p>
-        <p class="idea__quote"><%= bracket %>A feed gives you information. A room gives you people.</p>
-        <p>Those connections are what change how I think and what I do next.</p>
-      </div>
-    </article>
-
-    <article class="idea reveal" data-io>
-      <header class="idea__head"><span class="util idea__label">Idea 06</span><h3 class="idea__title">Stakeholder management starts at home</h3></header>
-      <div class="idea__body">
-        <p>A joint family is a large organisation. A nuclear family is a startup. In a startup you are agile, and you also sort everything out yourself. In a large organisation there are processes, and there is a backup for every emergency.</p>
-        <p>Life in a large household has taught me about competing interests, non-negotiables, and relationships that have to outlive the outcome. I do stakeholder management for a living, and I learnt a good part of it at home.</p>
-      </div>
-    </article>
+<% end -%>
   </div>
 </section>
 
 <section class="sheet" data-surface="chalk" data-ruler>
   <div class="wrap">
-    <%# Slot: when Pratima supplies a link for an experiment, add  <a class="link" href="...">Try it</a>  after its description. %>
-    <%= index_list('Three experiments', [
-      row('Meena ki Zindagi', 'Financial literacy game', 'A financial literacy game built for people with lower financial knowledge, such as househelps and blue-collar workers.', doodle(:dice, "A child's drawing of a dice and a small stack of coins.")),
-      row('Learning coaches', 'Learning agents', 'Personalised learning agents, grounded in a knowledge base you provide, that answer the learner in the flow of work, like a knowledgeable colleague.', doodle(:robot, "A child's drawing of a smiling box-shaped robot beside a stick figure.")),
-      row('Marketing agent', 'Built in Gemini', "An agent that is taught the brand guideline, or writes one if none exists, and helps make small collaterals in the right brand tone, so they don't look like every other AI-made flyer.", doodle(:megaphone, "A child's drawing of a megaphone with a star coming out of it."))
-    ], cls: 'index--exp', side: 'Things I have built to test these ideas.') %>
+    <%= index_list(p['experiments_heading'], p['experiments'].map { |x| row(x['name'], x['tag'], x['description'], art: doodle(x['drawing'], x['drawing_description']), link: x['link'], link_label: p['experiments_link_label']) }, cls: 'index--exp', side: p['experiments_intro']) %>
   </div>
 </section>
 
 <section class="sheet next" data-surface="chalk" data-ruler>
   <div class="wrap reveal" data-io>
-    <p class="d-m">These ideas started as posts. New ones appear on LinkedIn first.</p>
-    <p><%= linkedin('Follow me on LinkedIn') %></p>
+    <p class="d-m"><%= h p['next_step']['line'] %></p>
+    <p><%= linkedin(p['next_step']['button']) %></p>
   </div>
 </section>

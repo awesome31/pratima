@@ -1,0 +1,8 @@
+<% n = shared['not_found'] -%>
+<section class="panel lost" data-surface="board">
+  <div class="wrap">
+    <h1 class="d-l"><%= h n['heading'] %></h1>
+    <p class="r-l"><%= h n['line'] %></p>
+    <a class="link" href="<%= r %>"><%= h n['link'] %><%= arrow %></a>
+  </div>
+</section>

@@ -1,0 +1,44 @@
+<% p = C['about']; o = p['opening'] -%>
+<section class="panel chapter" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('I') %>
+    <p class="chapter__word d-xl"><%= h o['word'] %></p>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:capsule, o['drawing_description']) %></div>
+      <div class="chapter__text">
+        <h1 class="chapter__h"><%= h o['heading'] %></h1>
+        <p class="r-l"><%= h o['paragraph'] %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+<% p['story'].each do |part| -%>
+    <div class="grid story reveal" data-io>
+      <h2 class="d-m g-l"><%= h part['heading'] %></h2>
+      <div class="g-r prose r-l">
+<% part['paragraphs'].each do |text| -%>
+        <p><%= mark_in(text, part['highlighted_phrase'], :highlight) %></p>
+<% end -%>
+      </div>
+    </div>
+<% end -%>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+<% p['lists'].each do |list| -%>
+    <%= index_list(list['heading'], list['rows'].map { |x| row(x['name'], x['tag'], x['description']) }, cls: list['timeline_line'] ? 'index--path' : '') %>
+<% end -%>
+  </div>
+</section>
+
+<section class="sheet next" data-surface="chalk" data-ruler>
+  <div class="wrap reveal" data-io>
+    <p class="d-m"><%= h p['next_step']['line'] %></p>
+    <a class="link" href="<%= r('ideas/') %>"><%= h p['next_step']['link'] %><%= arrow %></a>
+  </div>
+</section>

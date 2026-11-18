@@ -1,0 +1,40 @@
+<% p = C['contact']; f = p['form'] -%>
+<section class="panel contact contact--page" data-surface="board">
+  <div class="wrap">
+    <div class="grid" style="align-items:start">
+      <figure class="g-l contact__photo print" data-io>
+        <%= photo('pratima-seated', p['photo_description'], '(min-width: 960px) 30vw, 80vw', eager: true) %>
+      </figure>
+      <div class="g-r contact__text">
+        <p class="util muted"><%= h p['label'] %></p>
+        <h1 class="d-l"><%= h p['heading'] %></h1>
+        <p class="r-l"><%= h p['paragraph'] %></p>
+        <p class="r-m"><%= h p['linkedin_line'] %></p>
+        <p><span class="contact__cta" data-io><%= linkedin %><%= pen_arrow_down %></span></p>
+
+        <p class="r-m form-intro"><%= h f['intro'] %></p>
+        <form class="form" data-form <%= form_attrs %> method="post" novalidate>
+          <div class="field">
+            <label class="util" for="f-name"><%= h f['name_label'] %></label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+            <p class="field__err" id="e-name" hidden><%= h f['name_error'] %></p>
+          </div>
+          <div class="field">
+            <label class="util" for="f-email"><%= h f['email_label'] %></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+            <p class="field__err" id="e-email" hidden><%= h f['email_error'] %></p>
+          </div>
+          <div class="field">
+            <label class="util" for="f-message"><%= h f['message_label'] %></label>
+            <textarea id="f-message" name="message" rows="4" required aria-describedby="e-message"></textarea>
+            <p class="field__err" id="e-message" hidden><%= h f['message_error'] %></p>
+          </div>
+          <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn" type="submit"><%= h f['send_button'] %></button>
+        </form>
+        <p class="form__status r-m" data-sent role="status" hidden><%= tick %><%= h f['sent_message'] %></p>
+        <p class="form__status r-m" data-failed role="alert" hidden><%= h f['failed_message'] %></p>
+      </div>
+    </div>
+  </div>
+</section>

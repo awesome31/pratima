@@ -1,0 +1,52 @@
+<% p = C['ideas']; o = p['opening'] -%>
+<section class="panel chapter" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('II') %>
+    <p class="chapter__word d-xl"><%= h o['word'] %></p>
+    <div class="grid chapter__body">
+      <figure class="chapter__art chapter__art--photo print" style="--tilt:-2deg" data-io>
+        <%= photo('pratima-laptop', o['photo_description'], '(min-width: 960px) 40vw, 90vw', portrait: false, eager: true) %>
+      </figure>
+      <div class="chapter__text">
+        <h1 class="chapter__h"><%= h o['heading'] %></h1>
+        <p class="r-l"><%= h o['paragraph'] %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <div class="sec-head"><h2 class="d-m"><%= h p['ideas_heading'] %></h2><span class="sec-head__count d-m" aria-hidden="true"><%= p['ideas'].size %></span></div>
+<% p['ideas'].each do |idea| -%>
+
+    <article class="idea reveal" data-io>
+      <header class="idea__head"><span class="util idea__label"><%= h idea['label'] %></span><h3 class="idea__title"><%= h idea['title'] %></h3></header>
+      <div class="idea__body">
+<% idea['paragraphs'].each do |text| -%>
+        <p><%= h text %></p>
+<% end -%>
+<% unless idea['quote'].to_s.strip.empty? -%>
+        <p class="idea__quote"><%= bracket %><%= h idea['quote'] %></p>
+<% end -%>
+<% unless idea['after_quote'].to_s.strip.empty? -%>
+        <p><%= h idea['after_quote'] %></p>
+<% end -%>
+      </div>
+    </article>
+<% end -%>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <%= index_list(p['experiments_heading'], p['experiments'].map { |x| row(x['name'], x['tag'], x['description'], art: doodle(x['drawing'], x['drawing_description']), link: x['link'], link_label: p['experiments_link_label']) }, cls: 'index--exp', side: p['experiments_intro']) %>
+  </div>
+</section>
+
+<section class="sheet next" data-surface="chalk" data-ruler>
+  <div class="wrap reveal" data-io>
+    <p class="d-m"><%= h p['next_step']['line'] %></p>
+    <p><%= linkedin(p['next_step']['button']) %></p>
+  </div>
+</section>

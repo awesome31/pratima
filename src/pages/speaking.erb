@@ -1,0 +1,50 @@
+<% p = C['speaking']; o = p['opening'] -%>
+<section class="panel chapter" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('III') %>
+    <p class="chapter__word d-xl"><%= h o['word'] %></p>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:speaker, o['drawing_description']) %></div>
+      <div class="chapter__text">
+        <h1 class="chapter__h"><%= h o['heading'] %></h1>
+        <p class="r-l"><%= h o['paragraph'] %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <%= index_list(p['topics_heading'], p['topics'].map { |x| row(x['name'], nil, x['description']) }) %>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk" data-ruler>
+  <div class="wrap">
+    <%= index_list(p['record_heading'], p['record'].map { |x| row(x['name'], x['tag'], x['description']) }) %>
+    <div style="margin-top:var(--space-9)">
+      <%= figures %>
+    </div>
+<% links = p['slides_and_recordings'].select { |x| web_link?(x['link']) && !x['label'].to_s.strip.empty? } -%>
+<% unless links.empty? -%>
+    <ul style="margin-top:var(--space-7)">
+<% links.each do |x| -%>
+      <li><a class="link" href="<%= h x['link'].strip %>" target="_blank" rel="noopener"><%= h x['label'] %><span class="vh"> opens in a new tab</span><%= arrow %></a></li>
+<% end -%>
+    </ul>
+<% end -%>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="wrap">
+    <%= work_with_me %>
+  </div>
+</section>
+
+<section class="sheet next" data-surface="chalk" data-ruler>
+  <div class="wrap reveal" data-io>
+    <p class="d-m"><%= h p['next_step']['line'] %></p>
+    <p><a class="btn" href="<%= r('contact/') %>"><%= h p['next_step']['button'] %><%= arrow %></a></p>
+  </div>
+</section>

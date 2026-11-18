@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= h(title) %></title>
+<meta name="description" content="<%= h(description) %>">
+<meta property="og:title" content="<%= h(title) %>">
+<meta property="og:description" content="<%= h(description) %>">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E3A32">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23F3F5F1'/%3E%3Crect x='8' width='4' height='32' fill='%23D6246E'/%3E%3C/svg%3E">
+<link rel="preload" href="<%= r('assets/fonts/bricolage-grotesque-normal-400_800-latin.woff2') %>" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="<%= r('assets/fonts/newsreader-normal-400_600-latin.woff2') %>" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="<%= r('assets/css/fonts.css') %>">
+<link rel="stylesheet" href="<%= r('assets/css/site.css') %>">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="margin-rule" aria-hidden="true"></div>
+
+<header class="header">
+  <a class="header__mark" href="<%= r %>"><%= h shared['name'] %></a>
+  <nav class="header__nav util" aria-label="Chapters">
+<% NAV.each do |slug, _| -%>
+    <a href="<%= r("#{slug}/") %>"<%= key == slug ? ' aria-current="page"' : '' %>><%= h shared['menu'][slug] %></a>
+<% end -%>
+  </nav>
+  <button class="btn" type="button" data-menu data-close="<%= h shared['menu']['close_button'] %>" aria-expanded="false" aria-controls="menu"><span><%= h shared['menu']['menu_button'] %></span></button>
+</header>
+<div class="ruler" aria-hidden="true"></div>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <nav aria-label="Menu">
+    <ul class="menu__list d-l">
+<% NAV.each do |slug, numeral| -%>
+      <li><span class="util" aria-hidden="true"><%= numeral %></span><a href="<%= r("#{slug}/") %>"<%= key == slug ? ' aria-current="page"' : '' %>><span class="mark mark--underline"><%= h shared['menu'][slug] %><%= Page::UNDERLINE_SVG %></span></a></li>
+<% end -%>
+    </ul>
+  </nav>
+  <div><%= linkedin %></div>
+</div>
+
+<main id="main">
+<%= @body %>
+</main>
+
+<footer class="footer sheet" data-surface="chalk">
+  <div class="wrap util">
+    <span><%= h shared['footer_left'] %></span>
+    <%= hello(3, 'sticker--tilt') %>
+    <a href="<%= h shared['linkedin_url'] %>" target="_blank" rel="noopener"><%= h shared['footer_link'] %><span class="vh"> opens in a new tab</span></a>
+  </div>
+</footer>
+
+<script src="<%= r('assets/js/site.js') %>" defer></script>
+</body>
+</html>

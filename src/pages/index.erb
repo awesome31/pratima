@@ -1,0 +1,144 @@
+<% p = C['home']; hero = p['hero']; game = p['game'] -%>
+<section class="panel hero" data-surface="board" data-ruler>
+  <div class="wrap">
+    <div class="hero__text">
+      <p class="util hero__label"><%= h hero['label'] %></p>
+      <%= hello %>
+      <h1 class="hero__h"><%= hero['heading_lines'].each_with_index.map { |line, i| %(<span class="ln#{i.odd? ? ' ln--in' : ''}">#{mark_in(line, hero['underlined_phrase'], :underline)}</span>) }.join(' ') %></h1>
+      <p class="util hero__play"><span class="only-mouse"><%= h hero['prompt_mouse'] %></span><span class="only-touch"><%= h hero['prompt_touch'] %></span></p>
+      <%= linkedin %>
+    </div>
+    <figure class="hero__photo print" data-io>
+      <%= photo('pratima-standing', hero['photo_description'], '(min-width: 960px) 30vw, 78vw', eager: true) %>
+      <%= pen_arrow %>
+    </figure>
+  </div>
+</section>
+
+<section class="panel game" id="board" data-surface="board" data-ruler data-game>
+  <div class="wrap">
+    <div class="game__head">
+      <div class="game__intro" data-game-intro>
+        <p class="util muted"><%= h game['label'] %></p>
+        <h2 class="d-m"><%= h game['heading'] %></h2>
+        <p class="r-l"><%= h game['instruction'] %></p>
+      </div>
+      <div class="game__done" data-game-done hidden>
+        <p class="d-m"><%= h game['finished_line'] %></p>
+        <p class="r-l quote"><%= h game['finished_quote'] %></p>
+        <a class="link" href="<%= r('ideas/') %>"><%= h game['finished_link'] %><%= arrow %></a>
+      </div>
+      <p class="sticker sticker--count" aria-live="polite"><span data-game-count>0</span>&nbsp;of 7</p>
+    </div>
+    <ul class="vh" data-game-list>
+      <li><span lang="en">Hello</span>, <span>English</span></li>
+      <li><span lang="it">Ciao</span>, <span>Italian</span></li>
+      <li><span lang="hi">नमस्ते</span>, <span>Hindi</span></li>
+      <li><span lang="mr">नमस्कार</span>, <span>Marathi</span></li>
+      <li><span lang="gu">નમસ્તે</span>, <span>Gujarati</span></li>
+      <li><span lang="pa">ਸਤ ਸ੍ਰੀ ਅਕਾਲ</span>, <span>Punjabi</span></li>
+      <li><span lang="ja">こんにちは</span>, <span>Japanese</span></li>
+    </ul>
+    <p class="game__tools util">
+      <button type="button" data-game-all><%= h game['show_all_button'] %></button>
+      <button type="button" data-game-wipe><%= h game['wipe_button'] %></button>
+    </p>
+  </div>
+</section>
+
+<% a = p['about_preview'] -%>
+<section class="panel chapter" id="about" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('I') %>
+    <h2 class="chapter__word d-xl"><%= h a['word'] %></h2>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:capsule, a['drawing_description']) %></div>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l"><%= h a['paragraph'] %></p>
+        <a class="link" href="<%= r('about/') %>"><%= h a['link'] %><%= arrow %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% i = p['ideas_preview'] -%>
+<section class="panel chapter" id="ideas" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('II') %>
+    <h2 class="chapter__word d-xl"><%= h i['word'] %></h2>
+    <div class="grid chapter__body">
+      <figure class="chapter__art chapter__art--photo print" style="--tilt:-2deg" data-io>
+        <%= photo('pratima-laptop', i['photo_description'], '(min-width: 960px) 40vw, 90vw', portrait: false) %>
+      </figure>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l"><%= h i['paragraph'] %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="strip reveal" data-io role="region" aria-label="<%= h i['cards_label'] %>" tabindex="0">
+<% i['cards'].each do |card| -%>
+    <article class="card">
+      <span class="util"><%= h card['label'] %></span>
+      <h3 class="title"><%= h card['title'] %></h3>
+      <p class="r-m"><%= h card['text'] %></p>
+    </article>
+<% end -%>
+  </div>
+  <div class="wrap" style="padding-top:0">
+    <a class="link" href="<%= r('ideas/') %>"><%= h i['link'] %><%= arrow %></a>
+  </div>
+</section>
+
+<% s = p['speaking_preview'] -%>
+<section class="panel chapter" id="speaking" data-surface="board" data-ruler>
+  <div class="wrap">
+    <%= chapter_tag('III') %>
+    <h2 class="chapter__word d-xl"><%= h s['word'] %></h2>
+    <div class="grid chapter__body">
+      <div class="chapter__art" data-io><%= doodle(:speaker, s['drawing_description']) %></div>
+      <div class="chapter__text reveal" data-io>
+        <p class="r-l"><%= h s['paragraph'] %></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sheet" data-surface="chalk">
+  <div class="wrap">
+    <%= figures %>
+    <p style="margin-top:var(--space-6)"><a class="link" href="<%= r('speaking/') %>"><%= h s['link'] %><%= arrow %></a></p>
+  </div>
+</section>
+
+<section class="sheet sheet--tight" data-surface="chalk">
+  <div class="wrap">
+    <%= work_with_me %>
+  </div>
+</section>
+
+<% cl = p['closing'] -%>
+<section class="sheet closing" data-surface="chalk" data-ruler>
+  <div class="wrap d-l" data-io>
+    <p><%= mark_in(cl['line_1'], cl['struck_word'], :strike) %></p>
+    <p><%= mark_in(cl['line_2'], cl['circled_word'], :circle) %></p>
+  </div>
+</section>
+
+<% ct = p['contact_preview'] -%>
+<section class="panel contact" id="contact" data-surface="board" data-ruler>
+  <div class="wrap">
+    <div class="grid">
+      <figure class="g-l contact__photo print" data-io>
+        <%= photo('pratima-seated', ct['photo_description'], '(min-width: 960px) 30vw, 80vw') %>
+      </figure>
+      <div class="g-r contact__text reveal" data-io>
+        <h2 class="d-l"><%= h ct['heading'] %></h2>
+        <p><span class="contact__cta" data-io><%= linkedin %><%= pen_arrow_down %></span></p>
+        <p><a class="link" href="<%= r('contact/') %>"><%= h ct['link'] %><%= arrow %></a></p>
+      </div>
+    </div>
+  </div>
+</section>
